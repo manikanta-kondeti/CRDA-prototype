@@ -135,9 +135,14 @@ function runQuery() {
   request.success(function(response){
         //Do Something
         clearCanvas();
-        loadData(response);
+        if (response.features != null) {
+          loadData(response);
+        } else {
+          clearCanvas();
+          addImageOnCanvas('img/error_page.jpg');
+        }
         $('#queryModal').modal('hide');
-      });
+  });
 
   request.error(function(jqXHR, textStatus, errorThrown) {
     if (textStatus == 'timeout'){
@@ -146,7 +151,7 @@ function runQuery() {
       $('#queryModal').modal('hide');
       addImageOnCanvas('img/error_page.jpg');
     }
-    if (textStatus == 'error'){
+    if (textStatus == 'error' || textStatus == '404'){
       clearCanvas();
       $('#queryModal').modal('hide');
       addImageOnCanvas('img/error_page.jpg');
