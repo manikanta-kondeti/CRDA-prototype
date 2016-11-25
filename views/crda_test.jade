@@ -70,7 +70,7 @@ html
             span.icon-bar
             span.icon-bar
             span.icon-bar
-          a.navbar-brand(style='line-height:32px;', href='/') CRDA-PROTOTYPE
+          a.navbar-brand(style='line-height:32px;', href='/crda_test') CRDA-PROTOTYPE
         // Collect../ the nav links, forms, and other content for toggling
         #bs-example-navbar-collapse-1.collapse.navbar-collapse
           ul.nav.navbar-nav
@@ -101,7 +101,6 @@ html
                 i.fa.fa-arrow-left
               button.btn.btn-sm(title='Zoom full', onclick='_equalPosition()')
                 i.fa.fa-arrows-alt
-              button#openBtn.btn.btn-success(href='#myModal', data-toggle='modal') Attribute Table
             .col-md-2(style='width: 240px;')
               span.help-block Pen Stroke  
               input#stroke_color(title='Stroke color', type='button')
@@ -130,24 +129,9 @@ html
         .col-sm-6
           h2 Attribute View
           .table-responsive
-            table#table.table.table-bordered.table-hover(data-toggle='table')
+            table#table.diag.table.table-bordered.table-hover(data-show-toggle='true', data-show-columns='true', data-search='true', data-height='700')
               thead.diag-head
               tbody.diag-body
-    #myModal.modal.fade
-      .modal-dialog.modal-xl
-        .modal-content
-          .modal-header
-            button.close(type='button', data-dismiss='modal', aria-hidden='true') x
-            h3.modal-title Attribute Table
-          .modal-body
-            table#table.diag.table.table-striped(data-toggle='table')
-              thead.diag-head
-              tbody.diag-body
-          .modal-footer
-            button.btn.btn-default(type='button', data-dismiss='modal') Close
-        // /.modal-content
-      // /.modal-dialog
-    // /.modal
     // For uploads
     #queryModal.modal.fade.bs-example-modal-lg(tabindex='-1', role='dialog', aria-labelledby='myModalLabel', aria-hidden='true')
       .modal-dialog.modal-xl

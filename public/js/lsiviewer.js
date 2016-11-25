@@ -12,6 +12,7 @@
 var canvas = document.getElementById("map"), context, canvasWidth=window.innerWidth, canvasHeight=window.innerHeight,
     drawScale = null, xMin = 1000000000, xMax, yMin = 1000000000, yMax, shift_graph_to_center = 0;
 
+
 // benchmarking variables 
 var start_time;
 var end_time;
@@ -51,7 +52,7 @@ window.onload = function() {
     canvasHeight = canvas.height;
     var backgroundColorDiv = document.getElementById("backgroundColorDiv");
     backgroundColorDiv.hidden = true;
-    addImageOnCanvas('./assets/img/upload_files.jpg');
+    addImageOnCanvas('img/upload_files.jpg');
 
 };
 
@@ -89,15 +90,20 @@ function runQuery() {
 function populate_attribute_view(data){
     var geojson = data;
     var columns = [];
-    var data = []
+    var data = [];
+    var object = [];
     console.log("labels = " + typeof(labels));
     for(var i=0; i<labels.length; i++){
         columns.push({title : labels[i]});
     }
     for(var i=0; i<geojson.features.length; i++){
-        data.push(geojson.features[i].properties);
+        object = [];
+        for(key in geojson.features[i].properties){
+            object.push(geojson.features[i].properties[key]);
+        }
+        data.push(object);
     }
-    $('#table').bootstrapTable({
+    var table = $('#table').bootstrapTable({
         columns: columns,
         data: data
     });

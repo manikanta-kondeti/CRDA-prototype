@@ -78,7 +78,7 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand" style="line-height:32px;" href="/">CRDA-PROTOTYPE</a>
+                <a class="navbar-brand" style="line-height:32px;" href="/crda_test">CRDA-PROTOTYPE</a>
             </div>
             <!-- Collect../ the nav links, forms, and other content for toggling -->
             <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
@@ -122,7 +122,7 @@
                         </button>
                         <button title="Zoom full" onClick="_equalPosition()" class="btn btn-sm"><i class="fa fa-arrows-alt"></i>
                         </button>
-                        <button href="#myModal" id="openBtn" data-toggle="modal" class="btn btn-success" >Attribute Table</button>
+                        
                     </div>
                     <div class="col-md-2" style="width: 240px;">
                         <span class="help-block">Pen Stroke &nbsp;</span>
@@ -167,7 +167,7 @@
             <div class="col-sm-6">
                 <h2>Attribute View</h2>
                 <div  class="table-responsive">
-                    <table id="table" data-toggle="table"  class="table table-bordered table-hover">
+                    <table id="table" class="diag table table-bordered table-hover"  data-show-toggle="true" data-show-columns="true" data-search="true" data-height="700">
                         <thead class="diag-head">
                         </thead>
                         <tbody class="diag-body">
@@ -177,36 +177,6 @@
             </div>
         </div>
     </div>
-
-
-    <div class="modal fade" id="myModal">
-        <div class="modal-dialog modal-xl">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">x</button>
-                    <h3 class="modal-title">Attribute Table</h3>
-                </div>
-                <div class="modal-body">
-
-                    <table id="table" data-toggle="table" class="diag table table-striped">
-                        <thead class="diag-head">
-                        </thead>
-                        <tbody class="diag-body">
-                        </tbody>
-                    </table>
-
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-default " data-dismiss="modal">Close</button>
-                </div>
-
-            </div>
-            <!-- /.modal-content -->
-        </div>
-        <!-- /.modal-dialog -->
-    </div>
-    <!-- /.modal -->
-
 
   
     <!-- For uploads -->
