@@ -3,7 +3,7 @@ var router = express.Router();
 var postgeo = require("postgeo");
 var bodyParser = require('body-parser');
 var pg = require("pg");
-var conString = "postgres://Manikanta@127.0.0.1/crda_test";
+var conString = "postgres://postgres:crda_postgres@127.0.0.1/crda_test";
 
 var app = express();
 app.use(bodyParser.json());
