@@ -149,7 +149,7 @@ router.post('/pg/:name', function (req, res) {
             + "FROM (SELECT 'Feature' As type " 
             + ", ST_AsGeoJSON(lg.geom, 4)::json As geometry "
             + ", row_to_json((SELECT l FROM (SELECT gid, objectid, pc, category, tsc, sc, cc, bc, shape_leng, shape_area, plotcode, f,optionid, allotid,   farmername, aadhaar,  plotcat, quantity, plot, plot_x, plot_y, plot_code,  descr) As l )) As properties "
-            + "FROM plots As lg where lg.f = $1) As f ) As fc", [ attribute_value]);
+            + "FROM plots As lg where lg.gid = $1) As f ) As fc", [ attribute_value]);
 
         query.on("row", function (row, result) {
             console.log("row = " + row);

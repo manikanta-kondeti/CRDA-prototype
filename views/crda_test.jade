@@ -65,11 +65,6 @@ html
       .container
         // Brand and toggle get grouped for better mobile display
         .navbar-header
-          button.navbar-toggle(type='button', data-toggle='collapse', data-target='#bs-example-navbar-collapse-1')
-            span.sr-only Toggle navigation
-            span.icon-bar
-            span.icon-bar
-            span.icon-bar
           a.navbar-brand(style='line-height:32px;', href='/crda_test') CRDA-PROTOTYPE
         // Collect../ the nav links, forms, and other content for toggling
         #bs-example-navbar-collapse-1.collapse.navbar-collapse
@@ -78,7 +73,7 @@ html
               button#openBtn.btn.btn-info(href='#queryModal', onclick='getListOfAttributes();', data-toggle='modal', style='margin-top:13px;') QUERY
               a#download_link(href='#', download='map.jpg')
             li
-              button#openBtn.btn.btn-info(href='#exportModal', data-toggle='modal', style='margin-top:13px;') EXPORT
+              button#openBtn.btn.btn-info(href='#exportModal', data-toggle='modal', style='margin-top:13px;') PRINT MAP
         // /.navbar-collapse
       // /.container
     // Page Content
@@ -124,10 +119,12 @@ html
       // /.row
       .row
         .col-sm-6(style='padding-right:20px; border-right: 1px solid #ccc;')
-          h2 Map View
+          h2(style='font-family: verdana; text-align:center;') Map View
+          hr
           canvas#map(style='overflow:hidden;', ondblclick='_zoomEvent(event)')
         .col-sm-6
-          h2 Attribute View
+          h2(style='font-family: verdana; text-align: center;') Attribute View
+          hr
           .table-responsive
             table#table.diag.table.table-bordered.table-hover(data-show-toggle='true', data-show-columns='true', data-search='true', data-height='700')
               thead.diag-head

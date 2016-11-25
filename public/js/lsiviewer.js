@@ -9,7 +9,7 @@
  */
 /* Global Variables Declaration */
 /* Related to Canvas */
-var canvas = document.getElementById("map"), context, canvasWidth=window.innerWidth, canvasHeight=window.innerHeight,
+var canvas = document.getElementById("map"), context, canvasWidth=window.innerWidth - 30, canvasHeight=window.innerHeight,
     drawScale = null, xMin = 1000000000, xMax, yMin = 1000000000, yMax, shift_graph_to_center = 0;
 
 
@@ -46,7 +46,7 @@ window.onload = function() {
     /**
      *  We must not show canvas background color (Color paletter that used while exporting) without selecting color as an option. Therefore hide it in the initial load. 
     **/
-    canvas.width = window.innerWidth/2;
+    canvas.width = window.innerWidth/2 - 30;
     canvas.height = window.innerHeight;
     canvasWidth = canvas.width;
     canvasHeight = canvas.height;
@@ -118,8 +118,8 @@ function populate_attribute_view(data){
   labelsFill and traverseLabels (Filling labels in arrays and giving control to the UI)--- 
  */
 function clearCanvas() {
-    canvasWidth = window.innerWidth,
-    canvasHeight = window.innerHeight,
+    canvasWidth = canvas.width,
+    canvasHeight = canvas.height,
     drawScale = null;
     _zoomX = canvasWidth / 2,
     _zoomY = canvasHeight / 2,
@@ -178,8 +178,8 @@ function loadData(response) {
     console.log("To draw the file it took " + (t1 - t0) + " milliseconds.")
     console.log("To communicate with server, convert and draw the file it took " + (t1-start_time) + " milliseconds.")
     labelsFill();
-    populate_attribute_view(geojson);
     traverseLabels(geojson.features);
+    populate_attribute_view(geojson);
 };
 
 /**
@@ -193,15 +193,21 @@ function initJson(geojson) {
     context = canvas.getContext('2d');
     //Calculating Bounding Box 
     draw(geojson.features, 'bbox');
+    
     xScale = canvas.width / Math.abs(xMax - xMin);
     yScale = canvas.height / Math.abs(yMax - yMin);
     drawScale = xScale < yScale ? xScale : yScale;
+    
+    console.log(" for Points xMin = " + xMin + " xMax = " + xMax + " yMin = " + yMin + " yMax = " 
+        + yMax + " xScale = " + xScale + " yScale = " + yScale + " drawScale = " + drawScale);
+
+    /* Not needed
     if (((xMax - xMin) * drawScale) < canvasWidth / 2) {
         shift_graph_to_center = 1;
        // console.log("shift_graph_to_center = " + shift_graph_to_center);
     }
-    // check for shifting the figure 
-   // console.log(" for Points xMin = " + xMin + " xMax = " + xMax + " yMin = " + yMin + " yMax = " + yMax + " xScale = " + xScale + " yScale = " + yScale + " drawScale = " + drawScale);
+    */
+   
 }
 
 /**
@@ -272,7 +278,20 @@ var getCenter = function(coords, geomtype) {
         }
         centerX = (pMinx + pMaxx) / 2;
         centerY = (pMiny + pMaxy) / 2;
-    } else if (geomtype == "MultiPolygon") {}
+    } else if (geomtype == "MultiPolygon") {
+            var pMinx = Number.MIN_VAL, pMaxx = Number.MAX_VAL, pMiny = Number.MIN_VAL, pMaxy = Number.MAX_VAL;
+            for (var i = 0; i < coords[0].length; i++) {
+                var obj = coords[0][i];
+                for (var j = 0; j < obj.length; j++) {
+                pMinx = pMinx < obj[j][0] ? pMinx : obj[j][0];
+                pMaxx = pMaxx > obj[j][0] ? pMaxx : obj[j][0];
+                pMiny = pMiny < obj[j][1] ? pMiny : obj[j][1];
+                pMaxy = pMaxy > obj[j][1] ? pMaxy : obj[j][1];
+               }
+            }
+            centerX = (pMinx + pMaxx) / 2;
+            centerY = (pMiny + pMaxy) / 2;
+        }
     return [centerX, centerY];
 }
 
@@ -331,11 +350,12 @@ function draw(features, action) {
         context.drawImage(imageObj, canvasWidth - 400, canvasHeight - 100, w, h);
     };
 
+    /*
     imageObj.src = 'img/north.png';
     if (features == null || features.length == undefined) {
         addImageOnCanvas('img/error_page.jpg');
         return
-    }
+    } */
   //  console.log('Features length = ' + features.length)
     for (var i = 0; i < features.length; i++) {
         var coords = features[i].geometry.coordinates;
@@ -392,6 +412,20 @@ function draw(features, action) {
         } else if (geomtype == "MultiPolygon") {
             for (var k = 0; k < coords.length; k++) {
                 traverseCoordinates(coords[k][0], action, geomtype);
+                    //Labelling 
+                    if (labelFlag == 1) {
+                        cx = props["centerX"];
+                        cy = props["centerY"];
+                        console.log("props,cx = " + cx + "  props,cy = " + cy);
+                        cx = (cx - xMin) * drawScale;
+                        cy = (yMax - cy) * drawScale;
+                        console.log("cx = " + cx + "  cy = " + cy);
+                        context.save();
+                        context.font = _labelWidth + "pt Calibri";
+                        context.fillStyle = _labelColor;
+                        context.fillText(props[labelValue], cx - 8, cy);
+                        context.restore();
+                }
             }
         }
     }
@@ -400,7 +434,7 @@ function draw(features, action) {
     if (_exporting == true) {
         context.font = "14pt Calibri";
         context.fillStyle = "#000000";
-        context.fillText("Generating using Lsiviewer(http://lsi.iiit.ac.in/lsiviewer)", canvasWidth/2 - 120, canvasHeight - 30);
+        context.fillText("Generating using Lsiviewer(http://lsi.iiit.ac.in/lsiviewer)", canvasWidth/2 - 80, canvasHeight - 30);
     }
 }
 
@@ -707,7 +741,7 @@ var MouseDown = function(evt) {
     document.body.style.mozUserSelect = document.body.style.webkitUserSelect = document.body.style.userSelect = 'none';
     lastX = evt.offsetX || (evt.pageX - canvas.offsetLeft);
     lastY = evt.offsetY || (evt.pageY - canvas.offsetTop);
-    console.log("lastX = " + lastX + "lastY = " + lastY);
+  
     dragStart = [lastX, lastY];
     dragged = false;
 }
@@ -718,9 +752,7 @@ var MouseMove = function(evt) {
     lastY = evt.offsetY || (evt.pageY - canvas.offsetTop);
     dragged = true;
     if (dragStart !== null) {
-        var pt = [lastX, lastY];
-        console.log(" mm pt[0] = " + pt[0]);
-        console.log("dragStart[0] = " + dragStart[0])
+        var pt = [lastX, lastY];        
         _moveX = pt[0] - dragStart[0];
         _moveY = pt[1] - dragStart[1];
         draw(geojson.features, 'draw');

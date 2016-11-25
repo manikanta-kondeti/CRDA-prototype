@@ -72,12 +72,7 @@
         <div class="container">
             <!-- Brand and toggle get grouped for better mobile display -->
             <div class="navbar-header">
-                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
-                    <span class="sr-only">Toggle navigation</span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                </button>
+                
                 <a class="navbar-brand" style="line-height:32px;" href="/crda_test">CRDA-PROTOTYPE</a>
             </div>
             <!-- Collect../ the nav links, forms, and other content for toggling -->
@@ -90,7 +85,7 @@
                     </li>
 
                      <li>
-                        <button href="#exportModal" id="openBtn" data-toggle="modal" style="margin-top:13px;" class="btn btn-info">EXPORT</button>
+                        <button href="#exportModal" id="openBtn" data-toggle="modal" style="margin-top:13px;" class="btn btn-info">PRINT MAP</button>
                     </li>
                 </ul>
 
@@ -161,12 +156,14 @@
         <!-- /.row -->
         <div class="row">
             <div class="col-sm-6" style="padding-right:20px; border-right: 1px solid #ccc;">
-                <h2>Map View</h2>
+                <h2 style="font-family: verdana; text-align:center;">Map View</h2>
+                <hr/>
                 <canvas id="map" style="overflow:hidden;" ondblclick="_zoomEvent(event)" ></canvas>
             </div>
             <div class="col-sm-6">
-                <h2>Attribute View</h2>
-                <div  class="table-responsive">
+                <h2 style="font-family: verdana; text-align: center;">Attribute View</h2>
+                <hr/>
+                <div class="table-responsive">
                     <table id="table" class="diag table table-bordered table-hover"  data-show-toggle="true" data-show-columns="true" data-search="true" data-height="700">
                         <thead class="diag-head">
                         </thead>
@@ -311,7 +308,7 @@
         // method: getListOfAttributes()
         function getListOfAttributes() {
             $.get( "/attributes", function( data ) {
-                alert( "Data Loaded: " + data );
+            
                 select = document.getElementById('select_attribute');
                 for (var i = 0; i<data.length; i++){
                     var opt = document.createElement('option');
