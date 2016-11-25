@@ -56,35 +56,6 @@ window.onload = function() {
 
 };
 
-function runQuery() {
-    var select = document.getElementById('select_attribute').value;
-    console.log("select value = " + select);
-    var value = document.getElementById('value_input').value;
-    var query_string = select + "$+$" + value;
-    console.log("query string = " + query_string);
-    //POST REQUEST 
-     var options = {  
-        url: '/pg/'+query_string,
-        success: function(response) { 
-            $("#upload_form")[0].reset();
-            $('#queryModal').modal('hide');
-            clearCanvas();
-            loadData(response);
-        }, 
-        error: function(response) {
-            clearCanvas();
-            $('#queryModal').modal('hide');
-            addImageOnCanvas('img/error_page.jpg');
-        }
-    }; 
-            
-    $('#upload_form').submit(function(e) {   //Ajax Submit form   
-        e.preventDefault();
-        e.stopImmediatePropagation(); 
-        $(this).ajaxSubmit(options);
-        return false;
-    });
-}
 
 // Populate Attribute View 
 function populate_attribute_view(data){
@@ -118,6 +89,7 @@ function populate_attribute_view(data){
   labelsFill and traverseLabels (Filling labels in arrays and giving control to the UI)--- 
  */
 function clearCanvas() {
+    console.log("Clear canvas called");
     canvasWidth = canvas.width,
     canvasHeight = canvas.height,
     drawScale = null;
@@ -144,8 +116,69 @@ function clearCanvas() {
     labelValue = null;
     var select = document.getElementsByClassName('labels');
     select[0].options.length = 1;
+    $('#table').bootstrapTable('destroy'); 
     context.clearRect(0, 0, canvasWidth, canvasHeight);
     return true;
+}
+
+
+function runQuery() {
+    var select = document.getElementById('select_attribute').value;
+    console.log("select = " + select);
+    var value = document.getElementById('value_input').value;
+    console.log("value = " + value);
+    var query_string = select + "$+$" + value;
+    console.log("query string = " + query_string);
+    
+    var request = $.get( "/pg/execute_query", {select_attribute : select, value_input : value});
+
+  request.success(function(response){
+        //Do Something
+        clearCanvas();
+        loadData(response);
+        $('#queryModal').modal('hide');
+      });
+
+  request.error(function(jqXHR, textStatus, errorThrown) {
+    if (textStatus == 'timeout'){
+      console.log('The server is not responding');
+      clearCanvas();
+      $('#queryModal').modal('hide');
+      addImageOnCanvas('img/error_page.jpg');
+    }
+    if (textStatus == 'error'){
+      clearCanvas();
+      $('#queryModal').modal('hide');
+      addImageOnCanvas('img/error_page.jpg');
+    }
+  });
+
+    /*
+    //POST REQUEST 
+     var options = {  
+        url: '/pg/execute_query',
+        data: {'select_attribute' : select, 'value' : value},
+        success: function(response) { 
+            $("#upload_form")[0].reset();
+            clearCanvas();
+            loadData(response);
+            $('#queryModal').modal('hide');
+        }, 
+        error: function(response) {
+            clearCanvas();
+            $("#upload_form")[0].reset();
+            $('#queryModal').modal('hide');
+            addImageOnCanvas('img/error_page.jpg');
+        }
+    }; 
+            
+    $('#upload_form').submit(function(e) {   //Ajax Submit form   
+        e.preventDefault();
+        e.stopImmediatePropagation(); 
+        $(this).ajaxSubmit(options);
+        return false;
+    });
+    */
 }
 
 
@@ -496,7 +529,7 @@ function traverseCoordinates(coordinates, action, geomtype) {
 /* Styling Params (Zoom, Pan, Pen, Color, Label) */
 
 function _equalPosition() {
-    _zoomX = canvasWidth / 2, _zoomY = canvasHeight / 2, _moveX = 0, _moveY = 0, _labelWidth = 4, _penWidth = 1, scaleCount = 1;
+    _zoomX = canvasWidth / 2, _zoomY = canvasHeight / 2, _moveX = 0, _moveY = 0, _labelWidth = 6, _penWidth = 1, scaleCount = 1;
     draw(geojson.features, 'draw');
 }
 
@@ -564,7 +597,7 @@ function _panRight() {
 //Label functionalities
 
 function _labelSizeIncrease() {
-    if (_labelWidth != 20) {
+    if (_labelWidth != 30) {
         _labelWidth += 1;
     }
     draw(geojson.features, 'draw');

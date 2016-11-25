@@ -102,29 +102,29 @@
             <div class="col-lg-18">
                 <div class="row">
 
-                    <div class="col-md-offset-1 col-md-4" style="width : 440px">
-                        <button title="Zoom in" class="btn btn-sm" onClick="_zoomIn()"><i class="fa fa-search-plus"></i>
+                    <div class="col-md-offset-1 col-md-4" style="width: 440px;" >
+                        <button title="Zoom in" class="btn btn-sm " onClick="_zoomIn()" style="margin-right: 2px;"><i class="fa fa-search-plus"></i>
                         </button>
-                        <button title="Zoom out" class="btn btn-sm" onClick="_zoomOut()"><i class="fa fa-search-minus"></i>
+                        <button title="Zoom out" class="btn btn-sm" onClick="_zoomOut()" style="margin-right: 2px;"><i class="fa fa-search-minus"></i>
                         </button>
-                        <button title="Pan up" class="btn btn-sm" onClick="_panUp()"><i class="fa fa-arrow-up"></i>
+                        <button title="Pan up" class="btn btn-sm" onClick="_panUp()" style="margin-right: 2px;"><i class="fa fa-arrow-up"></i>
                         </button>
-                        <button title="Pan down" class="btn btn-sm" onClick="_panDown()"><i class="fa fa-arrow-down"></i>
+                        <button title="Pan down" class="btn btn-sm" onClick="_panDown()" style="margin-right: 2px;"><i class="fa fa-arrow-down"></i>
                         </button>
-                        <button title="Pan right" class="btn btn-sm" onClick="_panRight()"><i class="fa fa-arrow-right"></i>
+                        <button title="Pan right" class="btn btn-sm" onClick="_panRight()" style="margin-right: 2px;"><i class="fa fa-arrow-right"></i>
                         </button>
-                        <button title="Pan left" class="btn btn-sm" onClick="_panLeft()"><i class="fa fa-arrow-left"></i>
+                        <button title="Pan left" class="btn btn-sm" onClick="_panLeft()" style="margin-right: 2px;"><i class="fa fa-arrow-left"></i>
                         </button>
-                        <button title="Zoom full" onClick="_equalPosition()" class="btn btn-sm"><i class="fa fa-arrows-alt"></i>
+                        <button title="Zoom full" onClick="_equalPosition()" class="btn btn-sm" style="margin-right: 2px;"><i class="fa fa-arrows-alt"></i>
                         </button>
                         
                     </div>
-                    <div class="col-md-2" style="width: 240px;">
+                    <div class="col-md-2"  style="width: 240px;">
                         <span class="help-block">Pen Stroke &nbsp;</span>
-                        <input title="Stroke color" type='button' id="stroke_color"></input>
-                        <button title="Penwidth increase" class="btn btn-sm" onClick="_penIncrease()"><i class="fa fa-plus"></i>
+                        <input title="Stroke color" style="margin-right: 2px;" type='button' id="stroke_color"></input>
+                        <button title="Penwidth increase" class="btn btn-sm" style="margin-right: 2px;" onClick="_penIncrease()"><i class="fa fa-plus"></i>
                         </button>
-                        <button title="Penwidth decrease" class="btn btn-sm" onClick="_penDecrease()"><i class="fa fa-minus"></i>
+                        <button title="Penwidth decrease" class="btn btn-sm" style="margin-right: 2px;" onClick="_penDecrease()"><i class="fa fa-minus"></i>
                         </button>
                     </div>
                     <div class="col-md-2">
@@ -135,10 +135,10 @@
                     <div class="col-md-2">
 
                         <span class="help-block">Label &nbsp;</span>
-                        <input title="Label color" type='button' id="label_color"></input>
-                        <button title="Label width increse " class="btn btn-sm" onClick="_labelSizeIncrease()"><i class="fa fa-plus"></i>
+                        <input title="Label color"  style="margin-right: 2px;" type='button' id="label_color"></input>
+                        <button title="Label width increse " class="btn btn-sm" style="margin-right: 2px;" onClick="_labelSizeIncrease()"><i class="fa fa-plus"></i>
                         </button>
-                        <button title="Label width decrease" class="btn btn-sm" onClick="_labelSizeDecrease()"><i class="fa fa-minus"></i>
+                        <button title="Label width decrease" class="btn btn-sm" style="margin-right: 2px;" onClick="_labelSizeDecrease()"><i class="fa fa-minus"></i>
                         </button>
 
                     </div>
@@ -150,9 +150,9 @@
                                         
 
                 </div>
-
-            </div>
+            </div>    
         </div>
+    
         <!-- /.row -->
         <div class="row">
             <div class="col-sm-6" style="padding-right:20px; border-right: 1px solid #ccc;">
@@ -174,7 +174,7 @@
             </div>
         </div>
     </div>
-
+    </div>
   
     <!-- For uploads -->
     <div class="modal fade bs-example-modal-lg" id="queryModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
@@ -187,19 +187,21 @@
                 </div>
                 <div class="modal-body">
                     <center>
+                       
                         <div class="form-group">
                             <label for="sel1">Select Attribute:</label>
-                            <select class="form-control" id="select_attribute"  style="width:20%" id="sel1">
+                            <select class="form-control" id="select_attribute" name="select_attribute" style="width:20%">
+                            </select>
                         </div>
                         <div class="form-group">
-                            </select>
-                            <label for="sel1">Attribute value:</label>
-                            <input type="textbox" style="width:20%"value="" id="value_input" /> 
+                            
+                            <label>Attribute value:</label>
+                            <input type="textbox" style="width:20%" id="value_input" name="value_input" /> 
                         </div>
-                        <form method="POST" name="upload_form"  id="upload_form" enctype="multipart/form-data">
+                        
                             <ul style="display: inline-flex; list-style-type : none;">
                                     <button class="btn btn-primary" onClick="runQuery()">RUN QUERY</button>
-                        </form>
+                        
                     </center>
 
                 </div>
@@ -307,16 +309,18 @@
 
         // method: getListOfAttributes()
         function getListOfAttributes() {
-            $.get( "/attributes", function( data ) {
-            
-                select = document.getElementById('select_attribute');
-                for (var i = 0; i<data.length; i++){
-                    var opt = document.createElement('option');
-                    opt.value = data[i]['column_name'];
-                    opt.innerHTML = data[i]['column_name'];
-                    select.appendChild(opt);
-                }
-            });
+            var select_length = document.getElementById('select_attribute').length;
+            if (select_length < 1){
+            $.get( "/attributes", function( data ) { 
+                    select = document.getElementById('select_attribute');
+                    for (var i = 0; i<data.length; i++){
+                        var opt = document.createElement('option');
+                        opt.value = data[i]['column_name'];
+                        opt.innerHTML = data[i]['column_name'];
+                        select.appendChild(opt);
+                    }
+                });
+            }
         }
 
     </script>

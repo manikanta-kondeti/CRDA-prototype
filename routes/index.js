@@ -1,9 +1,14 @@
 var express = require('express');
 var router = express.Router();
 var postgeo = require("postgeo");
+var bodyParser = require('body-parser');
 var pg = require("pg");
-
 var conString = "postgres://Manikanta@127.0.0.1/crda_test";
+
+var app = express();
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: false }));
+
 
 /* GET home page. */
 router.get('/', function(req, res) {
@@ -82,13 +87,14 @@ router.get('/attributes', function (req, res) {
 
 
 /* GET pg json data. */
+/*
 router.get('/pg/:name', function (req, res) {
     console.log("pg/"+req.params.name);
     if (req.params.name) {  
         
         var client = new pg.Client(conString);
         client.connect();         
-/*
+
         var query = client.query("SELECT row_to_json(fc) " 
             + "FROM ( SELECT 'FeatureCollection' As type, array_to_json(array_agg(f)) As features "
             + "FROM (SELECT 'Feature' As type "
@@ -97,7 +103,7 @@ router.get('/pg/:name', function (req, res) {
                 + "FROM geo_layers As lg "
                     + "INNER JOIN (SELECT gid, lname FROM geo_layers where lname = $1) As lp "
                     + "ON lg.gid = lp.gid  ) As f )  As fc", [req.params.name]); 
-*/
+
         // Query for our use f
         console.log(typeof(req.params.name));
         var query = client.query("SELECT row_to_json(fc) "
@@ -121,14 +127,16 @@ router.get('/pg/:name', function (req, res) {
     }
 });
 
+*/
 
 /* GET pg json data. */
-router.post('/pg/:name', function (req, res) {
-    console.log("pg/"+req.params.name);
-    var attribute_name = req.params.name.split("$+$")[0];
-    var attribute_value = req.params.name.split("$+$")[1];
+router.get('/pg/execute_query', function (req, res) {
+    console.log("In pg/execute_query");
+    var attribute_name = req.query.select_attribute;
+    var attribute_value = req.query.value_input;
 
-    if (req.params.name) {  
+    console.log("attribute name " + attribute_name + " attribute value = " + attribute_value);
+    if (attribute_value) {  
         
         var client = new pg.Client(conString);
         client.connect();         
@@ -142,14 +150,14 @@ router.post('/pg/:name', function (req, res) {
                     + "INNER JOIN (SELECT gid, lname FROM geo_layers where lname = $1) As lp "
                     + "ON lg.gid = lp.gid  ) As f )  As fc", [req.params.name]); 
 */
-        // Query for our use f
-        console.log("lg."+attribute_name);
+        
+        
         var query = client.query("SELECT row_to_json(fc) "
             + "FROM ( SELECT 'FeatureCollection' As type, array_to_json(array_agg(f)) As features "
             + "FROM (SELECT 'Feature' As type " 
             + ", ST_AsGeoJSON(lg.geom, 4)::json As geometry "
             + ", row_to_json((SELECT l FROM (SELECT gid, objectid, pc, category, tsc, sc, cc, bc, shape_leng, shape_area, plotcode, f,optionid, allotid,   farmername, aadhaar,  plotcat, quantity, plot, plot_x, plot_y, plot_code,  descr) As l )) As properties "
-            + "FROM plots As lg where lg.gid = $1) As f ) As fc", [ attribute_value]);
+            + "FROM plots As lg where " + "lg." + attribute_name +  " = $1) As f ) As fc", [ attribute_value]);
 
         query.on("row", function (row, result) {
             console.log("row = " + row);

@@ -81,37 +81,37 @@ html
       .row
         .col-lg-18
           .row
-            .col-md-offset-1.col-md-4(style='width : 440px')
-              button.btn.btn-sm(title='Zoom in', onclick='_zoomIn()')
+            .col-md-offset-1.col-md-4(style='width: 440px;')
+              button.btn.btn-sm(title='Zoom in', onclick='_zoomIn()', style='margin-right: 2px;')
                 i.fa.fa-search-plus
-              button.btn.btn-sm(title='Zoom out', onclick='_zoomOut()')
+              button.btn.btn-sm(title='Zoom out', onclick='_zoomOut()', style='margin-right: 2px;')
                 i.fa.fa-search-minus
-              button.btn.btn-sm(title='Pan up', onclick='_panUp()')
+              button.btn.btn-sm(title='Pan up', onclick='_panUp()', style='margin-right: 2px;')
                 i.fa.fa-arrow-up
-              button.btn.btn-sm(title='Pan down', onclick='_panDown()')
+              button.btn.btn-sm(title='Pan down', onclick='_panDown()', style='margin-right: 2px;')
                 i.fa.fa-arrow-down
-              button.btn.btn-sm(title='Pan right', onclick='_panRight()')
+              button.btn.btn-sm(title='Pan right', onclick='_panRight()', style='margin-right: 2px;')
                 i.fa.fa-arrow-right
-              button.btn.btn-sm(title='Pan left', onclick='_panLeft()')
+              button.btn.btn-sm(title='Pan left', onclick='_panLeft()', style='margin-right: 2px;')
                 i.fa.fa-arrow-left
-              button.btn.btn-sm(title='Zoom full', onclick='_equalPosition()')
+              button.btn.btn-sm(title='Zoom full', onclick='_equalPosition()', style='margin-right: 2px;')
                 i.fa.fa-arrows-alt
             .col-md-2(style='width: 240px;')
               span.help-block Pen Stroke  
-              input#stroke_color(title='Stroke color', type='button')
-              button.btn.btn-sm(title='Penwidth increase', onclick='_penIncrease()')
+              input#stroke_color(title='Stroke color', style='margin-right: 2px;', type='button')
+              button.btn.btn-sm(title='Penwidth increase', style='margin-right: 2px;', onclick='_penIncrease()')
                 i.fa.fa-plus
-              button.btn.btn-sm(title='Penwidth decrease', onclick='_penDecrease()')
+              button.btn.btn-sm(title='Penwidth decrease', style='margin-right: 2px;', onclick='_penDecrease()')
                 i.fa.fa-minus
             .col-md-2
               span.help-block Fill Color  
               input#fill_color(title='Fill color', type='button')
             .col-md-2
               span.help-block Label  
-              input#label_color(title='Label color', type='button')
-              button.btn.btn-sm(title='Label width increse ', onclick='_labelSizeIncrease()')
+              input#label_color(title='Label color', style='margin-right: 2px;', type='button')
+              button.btn.btn-sm(title='Label width increse ', style='margin-right: 2px;', onclick='_labelSizeIncrease()')
                 i.fa.fa-plus
-              button.btn.btn-sm(title='Label width decrease', onclick='_labelSizeDecrease()')
+              button.btn.btn-sm(title='Label width decrease', style='margin-right: 2px;', onclick='_labelSizeDecrease()')
                 i.fa.fa-minus
             .col-md-1
               select#label.labels.form-control(onchange='labelToggle();')
@@ -141,13 +141,12 @@ html
             center
               .form-group
                 label(for='sel1') Select Attribute:
-                select#select_attribute.form-control(style='width:20%')
+                select#select_attribute.form-control(name='select_attribute', style='width:20%')
               .form-group
-                label(for='sel1') Attribute value:
-                input#value_input(type='textbox', style='width:20%', value='')
-              form#upload_form(method='POST', name='upload_form', enctype='multipart/form-data')
-                ul(style='display: inline-flex; list-style-type : none;')
-                  button.btn.btn-primary(onclick='runQuery()') RUN QUERY
+                label Attribute value:
+                input#value_input(type='textbox', style='width:20%', name='value_input')
+              ul(style='display: inline-flex; list-style-type : none;')
+                button.btn.btn-primary(onclick='runQuery()') RUN QUERY
           div(style='text-align: center')
             p#message_for_files
               b
@@ -218,8 +217,9 @@ html
       }
       // method: getListOfAttributes()
       function getListOfAttributes() {
+      var select_length = document.getElementById('select_attribute').length;
+      if (select_length < 1){
       $.get( "/attributes", function( data ) {
-      alert( "Data Loaded: " + data );
       select = document.getElementById('select_attribute');
       for (var i = 0; i<data.length; i++){
       var opt = document.createElement('option');
@@ -228,6 +228,7 @@ html
       select.appendChild(opt);
       }
       });
+      }
       }
     script(src='js/jquery.form.js')
     script(type='text/javascript', src='js/lsiviewer.js')
