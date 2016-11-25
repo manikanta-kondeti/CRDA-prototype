@@ -150,7 +150,7 @@ router.get('/pg/execute_query', function (req, res) {
                     + "INNER JOIN (SELECT gid, lname FROM geo_layers where lname = $1) As lp "
                     + "ON lg.gid = lp.gid  ) As f )  As fc", [req.params.name]); 
 */
-        
+        try {
         
         var query = client.query("SELECT row_to_json(fc) "
             + "FROM ( SELECT 'FeatureCollection' As type, array_to_json(array_agg(f)) As features "
@@ -159,10 +159,18 @@ router.get('/pg/execute_query', function (req, res) {
             + ", row_to_json((SELECT l FROM (SELECT gid, objectid, pc, category, tsc, sc, cc, bc, shape_leng, shape_area, plotcode, f,optionid, allotid,   farmername, aadhaar,  plotcat, quantity, plot, plot_x, plot_y, plot_code,  descr) As l )) As properties "
             + "FROM plots As lg where " + "lg." + attribute_name +  " = $1) As f ) As fc", [attribute_value]);
 
-        query.on("row", function (row, result) {
-            console.log("row = " + row);
-            result.addRow(row);
-        });
+        
+            query.on("row", function (row, result) {
+                    console.log("row = " + row);
+                    result.addRow(row);
+                });
+        }
+        catch(err) {
+            res.status(404)        // HTTP status 404: NotFound
+                .send('Not found');
+        }
+
+        
         query.on("end", function (result) {
             res.send(result.rows[0].row_to_json);
             res.end();

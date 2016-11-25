@@ -52,7 +52,7 @@ window.onload = function() {
     canvasHeight = canvas.height;
     var backgroundColorDiv = document.getElementById("backgroundColorDiv");
     backgroundColorDiv.hidden = true;
-    addImageOnCanvas('img/upload_files.jpg');
+    addImageOnCanvas('img/ask_your_query.jpg');
 
 };
 
