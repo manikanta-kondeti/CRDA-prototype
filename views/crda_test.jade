@@ -1,0 +1,252 @@
+doctype html
+html
+  head
+    link(rel='stylesheet', href='css/font-awesome/css/font-awesome.css')
+    link(rel='stylesheet', href='css/bootstrap.css')
+    link(rel='stylesheet', href='css/spectrum.css')
+    link(rel='stylesheet', href='//cdnjs.cloudflare.com/ajax/libs/bootstrap-table/1.11.0/bootstrap-table.min.css')
+    script(src='js/jquery-1.11.2.min.js')
+    script(src='//cdnjs.cloudflare.com/ajax/libs/bootstrap-table/1.11.0/bootstrap-table.min.js')
+    script(src='js/bootstrap.js')
+    script(src='js/spectrum.js')
+    script(src='//cdnjs.cloudflare.com/ajax/libs/bootstrap-table/1.11.0/locale/bootstrap-table-en-US.min.js')
+    style.
+      body {
+      overflow: hidden;
+      }
+      .help-block {
+      display: inline;
+      }
+      .modal-dialog {
+      width: 98%;
+      height: 90%;
+      padding: 0;
+      }
+      .modal-dialog-about {
+      width: 60%;
+      height: 60%;
+      padding: 0;
+      }
+      .btn-file {
+      position: relative;
+      overflow: hidden;
+      }
+      .btn-file input[type=file] {
+      position: absolute;
+      top: 0;
+      right: 0;
+      min-width: 100%;
+      min-height: 100%;
+      font-size: 100px;
+      text-align: right;
+      filter: alpha(opacity=0);
+      opacity: 0;
+      outline: none;
+      background: white;
+      cursor: inherit;
+      display: block;
+      }
+      .modal.in {
+      -webkit-transform: translateZ(0);
+      transform: translateZ(0);
+      }
+      .modal-backdrop.in {
+      opacity: 0;
+      }
+      @media (min-width: 992px) {
+      .navbar li {
+      margin-left: 1em;
+      margin-right: 1em;
+      }
+      }
+  body
+    // Navigation
+    nav.navbar.navbar-default.navbar-fixed-top(role='navigation')
+      .container
+        // Brand and toggle get grouped for better mobile display
+        .navbar-header
+          button.navbar-toggle(type='button', data-toggle='collapse', data-target='#bs-example-navbar-collapse-1')
+            span.sr-only Toggle navigation
+            span.icon-bar
+            span.icon-bar
+            span.icon-bar
+          a.navbar-brand(style='line-height:32px;', href='/') CRDA-PROTOTYPE
+        // Collect../ the nav links, forms, and other content for toggling
+        #bs-example-navbar-collapse-1.collapse.navbar-collapse
+          ul.nav.navbar-nav
+            li
+              button#openBtn.btn.btn-info(href='#queryModal', onclick='getListOfAttributes();', data-toggle='modal', style='margin-top:13px;') QUERY
+              a#download_link(href='#', download='map.jpg')
+            li
+              button#openBtn.btn.btn-info(href='#exportModal', data-toggle='modal', style='margin-top:13px;') EXPORT
+        // /.navbar-collapse
+      // /.container
+    // Page Content
+    div(style='margin-top: 90px; margin-right: 50px;')
+      .row
+        .col-lg-18
+          .row
+            .col-md-offset-1.col-md-4(style='width : 440px')
+              button.btn.btn-sm(title='Zoom in', onclick='_zoomIn()')
+                i.fa.fa-search-plus
+              button.btn.btn-sm(title='Zoom out', onclick='_zoomOut()')
+                i.fa.fa-search-minus
+              button.btn.btn-sm(title='Pan up', onclick='_panUp()')
+                i.fa.fa-arrow-up
+              button.btn.btn-sm(title='Pan down', onclick='_panDown()')
+                i.fa.fa-arrow-down
+              button.btn.btn-sm(title='Pan right', onclick='_panRight()')
+                i.fa.fa-arrow-right
+              button.btn.btn-sm(title='Pan left', onclick='_panLeft()')
+                i.fa.fa-arrow-left
+              button.btn.btn-sm(title='Zoom full', onclick='_equalPosition()')
+                i.fa.fa-arrows-alt
+              button#openBtn.btn.btn-success(href='#myModal', data-toggle='modal') Attribute Table
+            .col-md-2(style='width: 240px;')
+              span.help-block Pen Stroke  
+              input#stroke_color(title='Stroke color', type='button')
+              button.btn.btn-sm(title='Penwidth increase', onclick='_penIncrease()')
+                i.fa.fa-plus
+              button.btn.btn-sm(title='Penwidth decrease', onclick='_penDecrease()')
+                i.fa.fa-minus
+            .col-md-2
+              span.help-block Fill Color  
+              input#fill_color(title='Fill color', type='button')
+            .col-md-2
+              span.help-block Label  
+              input#label_color(title='Label color', type='button')
+              button.btn.btn-sm(title='Label width increse ', onclick='_labelSizeIncrease()')
+                i.fa.fa-plus
+              button.btn.btn-sm(title='Label width decrease', onclick='_labelSizeDecrease()')
+                i.fa.fa-minus
+            .col-md-1
+              select#label.labels.form-control(onchange='labelToggle();')
+                option(value='None') Label
+      // /.row
+      .row
+        .col-sm-6(style='padding-right:20px; border-right: 1px solid #ccc;')
+          h2 Map View
+          canvas#map(style='overflow:hidden;', ondblclick='_zoomEvent(event)')
+        .col-sm-6
+          h2 Attribute View
+          .table-responsive
+            table#table.table.table-bordered.table-hover(data-toggle='table')
+              thead.diag-head
+              tbody.diag-body
+    #myModal.modal.fade
+      .modal-dialog.modal-xl
+        .modal-content
+          .modal-header
+            button.close(type='button', data-dismiss='modal', aria-hidden='true') x
+            h3.modal-title Attribute Table
+          .modal-body
+            table#table.diag.table.table-striped(data-toggle='table')
+              thead.diag-head
+              tbody.diag-body
+          .modal-footer
+            button.btn.btn-default(type='button', data-dismiss='modal') Close
+        // /.modal-content
+      // /.modal-dialog
+    // /.modal
+    // For uploads
+    #queryModal.modal.fade.bs-example-modal-lg(tabindex='-1', role='dialog', aria-labelledby='myModalLabel', aria-hidden='true')
+      .modal-dialog.modal-xl
+        .modal-content
+          .modal-header
+            button.close(type='button', data-dismiss='modal', aria-label='Close')
+              span(aria-hidden='true') ×
+            h4#myModalLabel.modal-title(style='text-align: center;') QUERY
+          .modal-body
+            center
+              .form-group
+                label(for='sel1') Select Attribute:
+                select#select_attribute.form-control(style='width:20%')
+              .form-group
+                label(for='sel1') Attribute value:
+                input#value_input(type='textbox', style='width:20%', value='')
+              form#upload_form(method='POST', name='upload_form', enctype='multipart/form-data')
+                ul(style='display: inline-flex; list-style-type : none;')
+                  button.btn.btn-primary(onclick='runQuery()') RUN QUERY
+          div(style='text-align: center')
+            p#message_for_files
+              b
+          .modal-footer
+            button.btn.btn-default(type='button', data-dismiss='modal') Close
+    // Export Modal
+    #exportModal.modal.fade.bs-example-modal-lg(tabindex='-1', role='dialog', aria-labelledby='myModalLabel', aria-hidden='true')
+      .modal-dialog.modal-xl
+        .modal-content
+          .modal-header
+            button.close(type='button', data-dismiss='modal', aria-label='Close')
+              span(aria-hidden='true') ×
+            h4#myModalLabel.modal-title EXPORT YOUR DATA
+          .modal-body(style='margin-left: 40%;')
+            .row
+              .col-md-6
+                | Export data with Background as 
+                select#background_color_export.form-control(onchange='_addCanvasColor()')
+                  option(value='transparent') Transparent
+                  option(value='white') White
+                  option(value='color') Color
+                #backgroundColorDiv.col-md-2(style='width : 150px;')
+                  span.help-block Fill Color  
+                  input#fill_background_color(title='Fill color', type='button')
+                br
+                |                             Format of the image as 
+                select#export.form-control(onchange='_export();')
+                  option(value='--Select One--') --Select One--
+                  option(value='PNG') PNG
+                  option(value='JPG') JPG
+          .modal-footer
+            button.btn.btn-default(type='button', data-dismiss='modal') Close
+    // Modal
+    #myModal.modal.fade.bs-example-modal-lg(tabindex='-1', role='dialog', aria-labelledby='myModalLabel', aria-hidden='true')
+      .modal-dialog.modal-xl
+        .modal-content
+          .modal-header
+            button.close(type='button', data-dismiss='modal', aria-label='Close')
+              span(aria-hidden='true') ×
+            h4#myModalLabel.modal-title Modal title
+          .modal-body
+          .modal-footer
+            button.btn.btn-default(type='button', data-dismiss='modal') Close
+            button.btn.btn-primary(type='button') Save changes
+    script.
+      // Necessary for file validation
+      var MIME_TYPES = {
+      'shapefile': ['shp', 'shx', 'dbf'],
+      'gpx': ['gpx'],
+      'kml': ['kml'],
+      'geojson': ['geojson'],
+      'gml': ['gml']
+      }
+      function showUploadInput() {
+      $('#upload_form').show();
+      var select_file_format = document.getElementById('select_file').value;
+      var message = document.getElementById('message_for_files');
+      if (select_file_format == "None") {
+      $('#upload_form').hide();
+      message.innerHTML = '';
+      }
+      for (var key in MIME_TYPES) {
+      if (select_file_format == key) {
+      message.innerHTML = "<b>PLEASE MAKE SURE UPLOADING FILE(S) HAVE AN EXTENSION ." + MIME_TYPES[key] + "</b>";
+      }
+      }
+      console.log("select_file_format = " + select_file_format);
+      }
+      // method: getListOfAttributes()
+      function getListOfAttributes() {
+      $.get( "/attributes", function( data ) {
+      alert( "Data Loaded: " + data );
+      select = document.getElementById('select_attribute');
+      for (var i = 0; i<data.length; i++){
+      var opt = document.createElement('option');
+      opt.value = data[i]['column_name'];
+      opt.innerHTML = data[i]['column_name'];
+      select.appendChild(opt);
+      }
+      });
+      }
+    script(src='js/jquery.form.js')
+    script(type='text/javascript', src='js/lsiviewer.js')
