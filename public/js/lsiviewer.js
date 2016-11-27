@@ -19,7 +19,6 @@ var canvas = document.getElementById("map"),
     yMax = Number.MAX_VAL,
     shift_graph_to_center = 0;
 
-
 // benchmarking variables 
 var start_time;
 var end_time;
@@ -506,12 +505,30 @@ function draw(features, action) {
 
     context.restore();
     if (_exporting == true) {
-        context.font = "14pt Calibri";
+        addLogoWhileExporting('img/logo.jpg');
+        context.font = "12pt Calibri";
         context.fillStyle = "#000000";
-        context.fillText("Generating using Lsiviewer(http://lsi.iiit.ac.in/lsiviewer)", canvasWidth / 2 - 80, canvasHeight - 30);
+        context.fillText("Downloaded from CRDA DATA VIEWER(http://104.198.85.235:8080/crda_test)", canvasWidth / 2 - 300, canvasHeight - 30);        
+        
     }
 }
 
+function addLogoWhileExporting(url) {
+  
+    var imageObj = new Image();
+        imageObj.onload = function() {
+            imageObj.width = 20;
+            imageObj.height = 20;
+            context.drawImage(imageObj, 10, 10);
+            
+        };
+        imageObj.src = "img/logo.jpg";
+        context.font = "bold 16pt Verdana";
+        context.fillStyle = "#000000";
+        context.fillText("CAPITAL REGION DEVELOPMENT AUTHORITY", canvasWidth / 2 - 230, 30);
+        context.font = "9pt Verdana";
+        context.fillText("(APCRDA)", canvasWidth / 2 - 20, 50);
+}
 
 /**
  *   @params : coordinates(array), action(string), geomtype(string)
