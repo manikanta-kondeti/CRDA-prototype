@@ -1,16 +1,16 @@
-doctype html
-html
-  head
-    link(rel='stylesheet', href='css/font-awesome/css/font-awesome.css')
-    link(rel='stylesheet', href='css/bootstrap.css')
-    link(rel='stylesheet', href='css/spectrum.css')
-    link(rel='stylesheet', href='//cdnjs.cloudflare.com/ajax/libs/bootstrap-table/1.11.0/bootstrap-table.min.css')
-    script(src='js/jquery-1.11.2.min.js')
-    script(src='//cdnjs.cloudflare.com/ajax/libs/bootstrap-table/1.11.0/bootstrap-table.min.js')
-    script(src='js/bootstrap.js')
-    script(src='js/spectrum.js')
-    script(src='//cdnjs.cloudflare.com/ajax/libs/bootstrap-table/1.11.0/locale/bootstrap-table-en-US.min.js')
-    style.
+<!DOCTYPE html>
+<html>
+  <head>
+    <link rel="stylesheet" href="css/font-awesome/css/font-awesome.css">
+    <link rel="stylesheet" href="css/bootstrap.css">
+    <link rel="stylesheet" href="css/spectrum.css">
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/bootstrap-table/1.11.0/bootstrap-table.min.css">
+    <script src="js/jquery-1.11.2.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/bootstrap-table/1.11.0/bootstrap-table.min.js"></script>
+    <script src="js/bootstrap.js"></script>
+    <script src="js/spectrum.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/bootstrap-table/1.11.0/locale/bootstrap-table-en-US.min.js"></script>
+    <style>
       body {
       overflow: hidden;
       }
@@ -59,139 +59,165 @@ html
       margin-right: 1em;
       }
       }
-  body
-    // Navigation
-    nav.navbar.navbar-default.navbar-fixed-top(role='navigation')
-      .container
-        // Brand and toggle get grouped for better mobile display
-        .navbar-header
-          a.navbar-brand(style='line-height:32px;', href='/crda_test') CRDA DATA VIEWER
-        // Collect../ the nav links, forms, and other content for toggling
-        #bs-example-navbar-collapse-1.collapse.navbar-collapse
-          ul.nav.navbar-nav
-            li
-              button#openBtn.btn.btn-info(href='#queryModal', onclick='getListOfAttributes();', data-toggle='modal', style='margin-top:13px;') QUERY
-              a#download_link(href='#', download='map.jpg')
-            li
-              button#openBtn.btn.btn-info(href='#exportModal', data-toggle='modal', style='margin-top:13px;') PRINT MAP
-        // /.navbar-collapse
-      // /.container
-    // Page Content
-    div(style='margin-top: 90px; margin-right: 50px;')
-      .row
-        .col-lg-18
-          .row
-            .col-md-offset-1.col-md-4(style='width: 440px;')
-              button.btn.btn-sm(title='Zoom in', onclick='_zoomIn()', style='margin-right: 2px;')
-                i.fa.fa-search-plus
-              button.btn.btn-sm(title='Zoom out', onclick='_zoomOut()', style='margin-right: 2px;')
-                i.fa.fa-search-minus
-              button.btn.btn-sm(title='Pan up', onclick='_panUp()', style='margin-right: 2px;')
-                i.fa.fa-arrow-up
-              button.btn.btn-sm(title='Pan down', onclick='_panDown()', style='margin-right: 2px;')
-                i.fa.fa-arrow-down
-              button.btn.btn-sm(title='Pan right', onclick='_panRight()', style='margin-right: 2px;')
-                i.fa.fa-arrow-right
-              button.btn.btn-sm(title='Pan left', onclick='_panLeft()', style='margin-right: 2px;')
-                i.fa.fa-arrow-left
-              button.btn.btn-sm(title='Zoom full', onclick='_equalPosition()', style='margin-right: 2px;')
-                i.fa.fa-arrows-alt
-            .col-md-2(style='width: 240px;')
-              span.help-block Pen Stroke  
-              input#stroke_color(title='Stroke color', style='margin-right: 2px;', type='button')
-              button.btn.btn-sm(title='Penwidth increase', style='margin-right: 2px;', onclick='_penIncrease()')
-                i.fa.fa-plus
-              button.btn.btn-sm(title='Penwidth decrease', style='margin-right: 2px;', onclick='_penDecrease()')
-                i.fa.fa-minus
-            .col-md-2
-              span.help-block Fill Color  
-              input#fill_color(title='Fill color', type='button')
-            .col-md-2
-              span.help-block Label  
-              input#label_color(title='Label color', style='margin-right: 2px;', type='button')
-              button.btn.btn-sm(title='Label width increse ', style='margin-right: 2px;', onclick='_labelSizeIncrease()')
-                i.fa.fa-plus
-              button.btn.btn-sm(title='Label width decrease', style='margin-right: 2px;', onclick='_labelSizeDecrease()')
-                i.fa.fa-minus
-            .col-md-1
-              select#label.labels.form-control(onchange='labelToggle();')
-                option(value='None') Label
-      // /.row
-      .row
-        .col-sm-6(style='padding-right:20px; border-right: 1px solid #ccc;')
-          h2(style='font-family: verdana; text-align:center;') Map View
-          hr
-          canvas#map(style='overflow:hidden;', ondblclick='_zoomEvent(event)')
-        .col-sm-6
-          h2(style='font-family: verdana; text-align: center;') Attribute View
-          hr
-          .table-responsive
-            table#table.diag.table.table-bordered.table-hover(data-height='700')
-              thead.diag-head
-              tbody.diag-body
-    // For uploads
-    #queryModal.modal.fade.bs-example-modal-lg(tabindex='-1', role='dialog', aria-labelledby='myModalLabel', aria-hidden='true')
-      .modal-dialog.modal-xl
-        .modal-content
-          .modal-header
-            button.close(type='button', data-dismiss='modal', aria-label='Close')
-              span(aria-hidden='true') ×
-            h4#myModalLabel.modal-title(style='text-align: center;') QUERY
-          .modal-body
-            center
-              .form-group
-                label(for='sel1') Select Attribute:
-                select#select_attribute.form-control(name='select_attribute', style='width:20%')
-              .form-group
-                label Attribute value:
-                input#value_input(type='textbox', style='width:20%', name='value_input')
-              ul(style='display: inline-flex; list-style-type : none;')
-                button.btn.btn-primary(onclick='runQuery()') RUN QUERY
-          div(style='text-align: center')
-            p#message_for_files
-              b
-          .modal-footer
-            button.btn.btn-default(type='button', data-dismiss='modal') Close
-    // Export Modal
-    #exportModal.modal.fade.bs-example-modal-lg(tabindex='-1', role='dialog', aria-labelledby='myModalLabel', aria-hidden='true')
-      .modal-dialog.modal-xl
-        .modal-content
-          .modal-header
-            button.close(type='button', data-dismiss='modal', aria-label='Close')
-              span(aria-hidden='true') ×
-            h4#myModalLabel.modal-title EXPORT YOUR DATA
-          .modal-body(style='margin-left: 40%;')
-            .row
-              .col-md-6
-                | Export data with Background as 
-                select#background_color_export.form-control(onchange='_addCanvasColor()')
-                  option(value='transparent') Transparent
-                  option(value='white') White
-                  option(value='color') Color
-                #backgroundColorDiv.col-md-2(style='width : 150px;')
-                  span.help-block Fill Color  
-                  input#fill_background_color(title='Fill color', type='button')
-                br
-                |                             Format of the image as 
-                select#export.form-control(onchange='_export();')
-                  option(value='--Select One--') --Select One--
-                  option(value='PNG') PNG
-                  option(value='JPG') JPG
-          .modal-footer
-            button.btn.btn-default(type='button', data-dismiss='modal') Close
-    // Modal
-    #myModal.modal.fade.bs-example-modal-lg(tabindex='-1', role='dialog', aria-labelledby='myModalLabel', aria-hidden='true')
-      .modal-dialog.modal-xl
-        .modal-content
-          .modal-header
-            button.close(type='button', data-dismiss='modal', aria-label='Close')
-              span(aria-hidden='true') ×
-            h4#myModalLabel.modal-title Modal title
-          .modal-body
-          .modal-footer
-            button.btn.btn-default(type='button', data-dismiss='modal') Close
-            button.btn.btn-primary(type='button') Save changes
-    script.
+    </style>
+  </head>
+  <body>
+    <!-- Navigation-->
+    <nav role="navigation" class="navbar navbar-default navbar-fixed-top">
+      <div class="container">
+        <!-- Brand and toggle get grouped for better mobile display-->
+        <div class="navbar-header"><a style="line-height:32px;" href="/crda_test" class="navbar-brand">CRDA DATA VIEWER</a></div>
+        <!-- Collect../ the nav links, forms, and other content for toggling-->
+        <div id="bs-example-navbar-collapse-1" class="collapse navbar-collapse">
+          <ul class="nav navbar-nav">
+            <li>
+              <button id="openBtn" href="#queryModal" onclick="getListOfAttributes();" data-toggle="modal" style="margin-top:13px;" class="btn btn-info">QUERY</button><a id="download_link" href="#" download="map.jpg"></a>
+            </li>
+            <li>
+              <button id="openBtn" href="#exportModal" data-toggle="modal" style="margin-top:13px;" class="btn btn-info">PRINT MAP</button>
+            </li>
+          </ul>
+        </div>
+        <!-- /.navbar-collapse-->
+      </div>
+      <!-- /.container-->
+    </nav>
+    <!-- Page Content-->
+    <div style="margin-top: 90px; margin-right: 50px;">
+      <div class="row">
+        <div class="col-lg-18">
+          <div class="row">
+            <div style="width: 440px;" class="col-md-offset-1 col-md-4">
+              <button title="Zoom in" onclick="_zoomIn()" style="margin-right: 2px;" class="btn btn-sm"><i class="fa fa-search-plus"></i></button>
+              <button title="Zoom out" onclick="_zoomOut()" style="margin-right: 2px;" class="btn btn-sm"><i class="fa fa-search-minus"></i></button>
+              <button title="Pan up" onclick="_panUp()" style="margin-right: 2px;" class="btn btn-sm"><i class="fa fa-arrow-up"></i></button>
+              <button title="Pan down" onclick="_panDown()" style="margin-right: 2px;" class="btn btn-sm"><i class="fa fa-arrow-down"></i></button>
+              <button title="Pan right" onclick="_panRight()" style="margin-right: 2px;" class="btn btn-sm"><i class="fa fa-arrow-right"></i></button>
+              <button title="Pan left" onclick="_panLeft()" style="margin-right: 2px;" class="btn btn-sm"><i class="fa fa-arrow-left"></i></button>
+              <button title="Zoom full" onclick="_equalPosition()" style="margin-right: 2px;" class="btn btn-sm"><i class="fa fa-arrows-alt"></i></button>
+            </div>
+            <div style="width: 240px;" class="col-md-2"><span class="help-block">Pen Stroke  </span>
+              <input id="stroke_color" title="Stroke color" style="margin-right: 2px;" type="button">
+              <button title="Penwidth increase" style="margin-right: 2px;" onclick="_penIncrease()" class="btn btn-sm"><i class="fa fa-plus"></i></button>
+              <button title="Penwidth decrease" style="margin-right: 2px;" onclick="_penDecrease()" class="btn btn-sm"><i class="fa fa-minus"></i></button>
+            </div>
+            <div class="col-md-2"><span class="help-block">Fill Color  </span>
+              <input id="fill_color" title="Fill color" type="button">
+            </div>
+            <div class="col-md-2"><span class="help-block">Label  </span>
+              <input id="label_color" title="Label color" style="margin-right: 2px;" type="button">
+              <button title="Label width increse " style="margin-right: 2px;" onclick="_labelSizeIncrease()" class="btn btn-sm"><i class="fa fa-plus"></i></button>
+              <button title="Label width decrease" style="margin-right: 2px;" onclick="_labelSizeDecrease()" class="btn btn-sm"><i class="fa fa-minus"></i></button>
+            </div>
+            <div class="col-md-1">
+              <select id="label" onchange="labelToggle();" class="labels form-control">
+                <option value="None">Label</option>
+              </select>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- /.row-->
+      <div class="row">
+        <div style="padding-right:20px; border-right: 1px solid #ccc;" class="col-sm-6">
+          <h2 style="font-family: verdana; text-align:center;">Map View</h2>
+          <hr>
+          <canvas id="map" style="overflow:hidden;" ondblclick="_zoomEvent(event)"></canvas>
+        </div>
+        <div class="col-sm-6">
+          <h2 style="font-family: verdana; text-align: center;">Attribute View</h2>
+          <hr>
+          <div class="table-responsive">
+            <table id="table" data-height="700" class="diag table table-bordered table-hover">
+              <thead class="diag-head"></thead>
+              <tbody class="diag-body"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- For uploads-->
+    <div id="queryModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" class="modal fade bs-example-modal-lg">
+      <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" data-dismiss="modal" aria-label="Close" class="close"><span aria-hidden="true">×</span></button>
+            <h4 id="myModalLabel" style="text-align: center;" class="modal-title">QUERY</h4>
+          </div>
+          <div class="modal-body">
+            <center>
+              <div class="form-group">
+                <label for="sel1">Select Attribute:</label>
+                <select id="select_attribute" name="select_attribute" style="width:20%" class="form-control"></select>
+              </div>
+              <div class="form-group">
+                <label>Attribute value:</label>
+                <input id="value_input" type="textbox" style="width:20%" name="value_input">
+              </div>
+              <ul style="display: inline-flex; list-style-type : none;">
+                <button onclick="runQuery()" class="btn btn-primary">RUN QUERY</button>
+              </ul>
+            </center>
+          </div>
+          <div style="text-align: center">
+            <p id="message_for_files"><b></b></p>
+          </div>
+          <div class="modal-footer">
+            <button type="button" data-dismiss="modal" class="btn btn-default">Close</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Export Modal-->
+    <div id="exportModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" class="modal fade bs-example-modal-lg">
+      <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" data-dismiss="modal" aria-label="Close" class="close"><span aria-hidden="true">×</span></button>
+            <h4 id="myModalLabel" class="modal-title">EXPORT YOUR DATA</h4>
+          </div>
+          <div style="margin-left: 40%;" class="modal-body">
+            <div class="row">
+              <div class="col-md-6">Export data with Background as
+                <select id="background_color_export" onchange="_addCanvasColor()" class="form-control">
+                  <option value="white">White</option>
+                  <option value="transparent">Transparent</option>
+                  <option value="color">Color</option>
+                </select>
+                <div id="backgroundColorDiv" style="width : 150px;" class="col-md-2"><span class="help-block">Fill Color  </span>
+                  <input id="fill_background_color" title="Fill color" type="button">
+                </div><br>                            Format of the image as
+                <select id="export" onchange="_export();" class="form-control">
+                  <option value="--Select One--">--Select One--</option>
+                  <option value="PNG">PNG</option>
+                  <option value="JPG">JPG</option>
+                </select>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" data-dismiss="modal" class="btn btn-default">Close</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Modal-->
+    <div id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" class="modal fade bs-example-modal-lg">
+      <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" data-dismiss="modal" aria-label="Close" class="close"><span aria-hidden="true">×</span></button>
+            <h4 id="myModalLabel" class="modal-title">Modal title</h4>
+          </div>
+          <div class="modal-body"></div>
+          <div class="modal-footer">
+            <button type="button" data-dismiss="modal" class="btn btn-default">Close</button>
+            <button type="button" class="btn btn-primary">Save changes</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <script>
       // Necessary for file validation
       var MIME_TYPES = {
       'shapefile': ['shp', 'shx', 'dbf'],
@@ -230,5 +256,8 @@ html
       });
       }
       }
-    script(src='js/jquery.form.js')
-    script(type='text/javascript', src='js/lsiviewer.js')
+    </script>
+    <script src="js/jquery.form.js"></script>
+    <script type="text/javascript" src="js/lsiviewer.js"></script>
+  </body>
+</html>

@@ -33,7 +33,7 @@ var _zoomX = canvasWidth / 2,
     _penWidth = 1,
     _fillColor = "#c9baba",
     _strokeColor = "000000",
-    _backgroundColor = null;
+    _backgroundColor = "#ffffff";
 scaleCount = 1;
 _exporting = false;
 var _mouseMove = 0;
@@ -127,6 +127,7 @@ function clearCanvas() {
     _labelWidth = 15,
         _labelColor = "#1c1313",
         _penWidth = 1,
+        _backgroundColor = "#ffffff",
         _fillColor = "#c9baba",
         _strokeColor = "000000",
         scaleCount = 1;
@@ -515,19 +516,11 @@ function draw(features, action) {
 
 function addLogoWhileExporting(url) {
   
-    var imageObj = new Image();
-        imageObj.onload = function() {
-            imageObj.width = 20;
-            imageObj.height = 20;
-            context.drawImage(imageObj, 10, 10);
-            
-        };
-        imageObj.src = "img/logo.jpg";
         context.font = "bold 16pt Verdana";
         context.fillStyle = "#000000";
-        context.fillText("CAPITAL REGION DEVELOPMENT AUTHORITY", canvasWidth / 2 - 230, 30);
+        context.fillText("Lab for Spatial Informatics", canvasWidth / 2 - 150, 30);
         context.font = "9pt Verdana";
-        context.fillText("(APCRDA)", canvasWidth / 2 - 20, 50);
+        context.fillText("(LSI-CRDA)", canvasWidth / 2 - 30, 50);
 }
 
 /**

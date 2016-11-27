@@ -163,16 +163,16 @@ html
           .modal-body(style='margin-left: 40%;')
             .row
               .col-md-6
-                | Export data with Background as 
+                | Export data with Background as
                 select#background_color_export.form-control(onchange='_addCanvasColor()')
-                  option(value='transparent') Transparent
                   option(value='white') White
+                  option(value='transparent') Transparent
                   option(value='color') Color
                 #backgroundColorDiv.col-md-2(style='width : 150px;')
                   span.help-block Fill Color  
                   input#fill_background_color(title='Fill color', type='button')
                 br
-                |                             Format of the image as 
+                |                             Format of the image as
                 select#export.form-control(onchange='_export();')
                   option(value='--Select One--') --Select One--
                   option(value='PNG') PNG
