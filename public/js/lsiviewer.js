@@ -23,7 +23,7 @@ var _zoomX = canvasWidth / 2,
     _zoomY = canvasHeight / 2,
     _moveX = 0,
     _moveY = 0,
-    _labelWidth = 10,
+    _labelWidth = 15,
     _labelColor = "#1c1313",
     _penWidth = 1,
     _fillColor = "#c9baba",
@@ -97,10 +97,10 @@ function clearCanvas() {
     _zoomY = canvasHeight / 2,
     _moveX = 0,
     _moveY = 0,
-    xMin = 10000000;
-    xMax = -100000000;
-    yMin = 10000000;
-    yMax = -100000000;
+    xMin =  Number.xMin;
+    xMax = Number.MAX_VAL;
+    yMin = Number.MIN_VAL;
+    yMax = Number.MAX_VAL;
     _labelWidth = 10,
     _labelColor = "#1c1313",
     _penWidth = 1,
@@ -233,7 +233,7 @@ function initJson(geojson) {
     context = canvas.getContext('2d');
     //Calculating Bounding Box 
     draw(geojson.features, 'bbox');
-    
+    var bbox = [xMin, yMin, xMax, yMax];
     xScale = canvas.width / Math.abs(xMax - xMin);
     yScale = canvas.height / Math.abs(yMax - yMin);
     drawScale = xScale < yScale ? xScale : yScale;
@@ -324,7 +324,7 @@ var getCenter = function(coords, geomtype) {
             var pMinx = Number.MIN_VAL, pMaxx = Number.MAX_VAL, pMiny = Number.MIN_VAL, pMaxy = Number.MAX_VAL;
             for (var i1 = 0; i1 < coords.length; i1++) {
                 for (var i2 = 0; i2 < coords[i1].length; i2++) {
-                    var obj = coords[i1][i2];
+                var obj = coords[i1][i2];
                 for (var j = 0; j < obj.length; j++) {
                     pMinx = pMinx < obj[j][0] ? pMinx : obj[j][0];
                     pMaxx = pMaxx > obj[j][0] ? pMaxx : obj[j][0];
@@ -481,8 +481,10 @@ function draw(features, action) {
     }
 }
 
+
 /**
- *   This method 
+ *   @params : coordinates(array), action(string), geomtype(string)
+ *       return : updating global variables 
  */
 function traverseCoordinates(coordinates, action, geomtype) {
     if (geomtype == "Point" || geomtype == "MultiPoint") {
@@ -589,6 +591,24 @@ function traverseCoordinates(coordinates, action, geomtype) {
     
 }
 
+
+
+/*
+    @params : bbox [xMin, yMin, xMax, yMax]
+        return : new_bbox [xMin, yMin, xMax, yMax]
+*/
+function getNewExtent(bbox){
+    var xMin = bbox[0], yMin = bbox[1], xMax = bbox[2], yMax = bbox[3];
+    var new_xMin = (3*xMin - xMax)/2;
+    var new_yMin = (3*yMin - yMax)/2;
+    var new_xMax = (3*xMax - xMin)/2;
+    var new_yMax = (3*yMax - yMin)/2;
+    return [new_xMin, new_yMin, new_xMax, new_yMax];
+}
+
+
+
+
 /* Styling Params (Zoom, Pan, Pen, Color, Label) */
 
 function _equalPosition() {
@@ -660,7 +680,7 @@ function _panRight() {
 //Label functionalities
 
 function _labelSizeIncrease() {
-    if (_labelWidth != 30) {
+    if (_labelWidth != 60) {
         _labelWidth += 1;
     }
     draw(geojson.features, 'draw');
@@ -698,8 +718,8 @@ function _strokeColorChange() {
 function _penIncrease() {
     console.log("pen Increase called");
     _penWidth += 0.15;
-    if (_penWidth >= 3) {
-        _penWidth = 3;
+    if (_penWidth >= 6) {
+        _penWidth = 6;
     }
     draw(geojson.features, 'draw');
 }

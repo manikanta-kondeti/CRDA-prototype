@@ -156,7 +156,7 @@ router.get('/pg/execute_single_query_feature', function (req, res) {
         var query = client.query("SELECT row_to_json(fc) "
             + "FROM ( SELECT 'FeatureCollection' As type, array_to_json(array_agg(f)) As features "
             + "FROM (SELECT 'Feature' As type " 
-            + ", ST_AsGeoJSON(lg.geom, 4)::json As geometry "
+            + ", ST_AsGeoJSON(lg.geom, 6)::json As geometry "
             + ", row_to_json((SELECT l FROM (SELECT gid, objectid, pc, category, tsc, sc, cc, bc, shape_leng, shape_area, plotcode, f,optionid, allotid,   farmername, aadhaar,  plotcat, quantity, plot, plot_x, plot_y, plot_code,  descr) As l )) As properties "
             + "FROM plots As lg where " + "lg." + attribute_name +  " = $1) As f ) As fc", [attribute_value]);
 
@@ -207,28 +207,57 @@ router.get('/pg/execute_query', function (req, res) {
 */
         try {
         
-        /*
-        var query = client.query("SELECT row_to_json(fc) "
+        
+        var single_feature_query = client.query("SELECT row_to_json(fc) "
             + "FROM ( SELECT 'FeatureCollection' As type, array_to_json(array_agg(f)) As features "
             + "FROM (SELECT 'Feature' As type " 
-            + ", ST_AsGeoJSON(lg.geom, 4)::json As geometry "
+            + ", ST_AsGeoJSON(lg.geom, 6)::json As geometry "
             + ", row_to_json((SELECT l FROM (SELECT gid, objectid, pc, category, tsc, sc, cc, bc, shape_leng, shape_area, plotcode, f,optionid, allotid,   farmername, aadhaar,  plotcat, quantity, plot, plot_x, plot_y, plot_code,  descr) As l )) As properties "
             + "FROM plots As lg where " + "lg." + attribute_name +  " = $1) As f ) As fc", [attribute_value]);
-        */
         
 
-        var query = client.query("SELECT row_to_json(fc) FROM ( SELECT 'FeatureCollection' As type, array_to_json(array_agg(f)) As features "
-    + "FROM (SELECT 'Feature' As type, ST_AsGeoJSON(lg.geom, 4)::json As geometry "
-    + ", row_to_json((SELECT l FROM (SELECT gid, objectid, pc, category, tsc, sc, cc, bc, shape_leng, shape_area, plotcode, f, optionid, allotid,   farmername, aadhaar,  plotcat, quantity, plot, plot_x, plot_y, plot_code,  descr) As l "
-    + ")) As properties "
-    + "FROM plots As lg where lg.geom && ST_MakeEnvelope(80.4797, 16.5003, 80.4800, 16.5020, 4326))  As f ) As fc");
+        single_feature_query.on("row", function (row, result) {
+                    result.addRow(row);
+                    single_feature = row;
+        });
+        
+        single_feature_query.on("end", function (data) {
+            
+            var geojson = data.rows[0].row_to_json;
+            if (geojson.features == null) {
+             res.status(404)        // HTTP status 404: NotFound
+                .send('Not found');
+                return
+            }
+            // bbox : [xMin, yMin, xMax, yMax];
+            var bbox = getExtent(geojson.features);
+            // new_extent: 
+            var new_bbox = getNewExtent(bbox, 1);
+            
+            var xMin = new_bbox[0], xMax = new_bbox[2], yMin = new_bbox[1], yMax = new_bbox[3];
+            //xMin = 80.471388, yMin = 16.503913, xMax = 80.471707, yMax = 16.504358;
+            var query = client.query("SELECT row_to_json(fc) FROM ( SELECT 'FeatureCollection' As type, array_to_json(array_agg(f)) As features "
+            + "FROM (SELECT 'Feature' As type, ST_AsGeoJSON(lg.geom, 6)::json As geometry "
+            + ", row_to_json((SELECT l FROM (SELECT gid, objectid, pc, category, tsc, sc, cc, bc, shape_leng, shape_area, plotcode, f, optionid, allotid,   farmername, aadhaar,  plotcat, quantity, plot, plot_x, plot_y, plot_code,  descr) As l "
+            + ")) As properties "
+            + "FROM plots As lg where ST_Intersects(lg.geom, ST_MakeEnvelope(" + xMin + ", " + yMin + ", " + xMax + ", " + yMax + "," + " 4326)))  As f ) As fc");
 
 
 
             query.on("row", function (row, result) {
                     console.log("row = " + row);
                     result.addRow(row);
-                });
+            });
+
+            query.on("end", function (result) {
+                console.log(result.rows[0].row_to_json);
+                res.send(result.rows[0].row_to_json);
+                res.end();
+            });    
+        });
+
+        
+
         }
         catch(err) {
             res.status(404)        // HTTP status 404: NotFound
@@ -236,15 +265,86 @@ router.get('/pg/execute_query', function (req, res) {
         }
 
         
-        query.on("end", function (result) {
-            res.send(result.rows[0].row_to_json);
-            res.end();
-        });
     } else {
         res.status(404)        // HTTP status 404: NotFound
         .send('Not found');
     }
 });
+
+
+/*
+ @param : features geojson 
+    returns:  [MINX, ,MIN Y, MAXX, MAXY]
+*/
+function getExtent(features){
+    var xMin = Number.MIN_VAL, xMax = Number.MAX_VAL, yMin = Number.MIN_VAL, yMax = Number.MAX_VAL;
+    for (var i = 0; i < features.length; i++) {
+        var coordinates = features[i].geometry.coordinates;
+        var geomtype = features[i].geometry.type;
+        
+        if (geomtype == "Point" || geomtype == "MultiPoint") {
+            var x = coordinates[0];
+            var y = coordinates[1];
+                // console.log("in bbox, x = " + x + " xMin = " + xMin);
+                xMin = xMin < x ? xMin : x;
+                xMax = xMax > x ? xMax : x;
+                yMin = yMin < y ? yMin : y;
+                yMax = yMax > y ? yMax : y; 
+        } else if (geomtype == "Polygon") {
+            for (var j1 = 0; j1 < coordinates.length; j1++) {
+                for (var j2 = 0; j2 < coordinates[j1].length; j2++) {
+                    var x = coordinates[j1][j2][0];
+                    var y = coordinates[j1][j2][1];
+
+                        xMin = xMin < x ? xMin : x;
+                        xMax = xMax > x ? xMax : x;
+                        yMin = yMin < y ? yMin : y;
+                        yMax = yMax > y ? yMax : y;                                 
+                }
+            }
+           
+        } else if (geomtype == "MultiPolygon") {
+            for (var j1 = 0; j1 < coordinates.length; j1++) {
+                for (var j2 = 0; j2 < coordinates[j1].length; j2++) { 
+                    for (var j3 = 0; j3 < coordinates[j1][j2].length; j3++) {
+                        var x = coordinates[j1][j2][j3][0];
+                        var y = coordinates[j1][j2][j3][1];
+                            xMin = xMin < x ? xMin : x;
+                            xMax = xMax > x ? xMax : x;
+                            yMin = yMin < y ? yMin : y;
+                            yMax = yMax > y ? yMax : y;
+                    }
+                    
+                }
+            }
+        } else {
+            for (var j = 0; j < coordinates.length; j++) {
+                var x = coordinates[j][0];
+                var y = coordinates[j][1];
+                    xMin = xMin < x ? xMin : x;
+                    xMax = xMax > x ? xMax : x;
+                    yMin = yMin < y ? yMin : y;
+                    yMax = yMax > y ? yMax : y;
+            }
+        }
+                
+    }
+    console.log("Extent coordinates = " + xMin + " " + xMax + " " + yMin + " " + yMax);
+    return [xMin, yMin, xMax, yMax];
+}
+
+/*
+    @params : bbox [xMin, yMin, xMax, yMax], change_in_length (how much length is expected)
+        return : new_bbox [xMin, yMin, xMax, yMax]
+*/
+function getNewExtent(bbox, change_in_length){
+    var xMin = bbox[0], yMin = bbox[1], xMax = bbox[2], yMax = bbox[3];
+    var new_xMin = xMin - (change_in_length * (xMax - xMin));
+    var new_yMin = yMin - (change_in_length * (yMax - yMin));
+    var new_xMax = xMax + (change_in_length * (xMax - xMin));
+    var new_yMax = yMax + (change_in_length * (yMax - yMin));
+    return [new_xMin, new_yMin, new_xMax, new_yMax];
+}
 
 
 module.exports = router;
